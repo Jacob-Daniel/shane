@@ -1,0 +1,359 @@
+@import "tailwindcss";
+@source "../woocommerce/**/*.php";
+@source "../**/*.php";
+@source "../js/**/*.js";
+
+@theme {
+	--font-sans: "franklin-gothic-atf", sans-serif;
+	--font-franklin: "franklin-gothic-atf", sans-serif;
+}
+
+@layer base {
+	body {
+		background-color: #ffffff;
+		color: #111111;
+		font-family: var(--font-sans);
+		font-size: 0.875rem;
+		-webkit-font-smoothing: antialiased;
+		font-weight: 400;
+		line-height: 1.15;
+		margin: 0;
+	}
+}
+
+@layer components {
+	/* Default: every page except landing */
+	.header-site-title {
+		@apply flex flex-col gap-y-1 text-black uppercase;
+	}
+	.site-title {
+		@apply text-[0.7rem] leading-none m-0 font-extrabold;
+	}
+	.site-title a {
+		@apply no-underline text-inherit;
+	}
+	.site-description {
+		@apply m-0 text-[0.65rem];
+	}
+
+	/* Landing only */
+	.page-template-page_landing .header-site-title {
+		@apply text-white;
+	}
+	.page-template-page_landing .site-title {
+		@apply text-[1.475rem];
+	}
+	.page-template-page_landing .nav-menu span {
+		@apply text-white;
+	}
+
+	.nav-menu {
+		@apply flex flex-wrap justify-start w-full leading-none;
+	}
+	.nav-menu .menu-item {
+		@apply inline-block text-center mb-0 pb-0;
+	}
+	.nav-menu a {
+		@apply inline-block pe-[25px] py-[10px] text-[1rem] font-medium uppercase
+           tracking-[.035rem] align-middle no-underline text-[#111111]
+           hover:text-[#B2B2B2];
+	}
+	.nav-menu > .first > a {
+		@apply pl-0;
+	}
+	.nav-menu > .last > a {
+		@apply pr-0;
+	}
+
+	.site-header {
+		@apply top-0;
+		@apply text-left;
+	}
+	.site-header .header-site-title {
+		@apply text-left;
+	}
+	.site-header .header-navbar {
+		@apply justify-start;
+	}
+
+	/* Landing overrides back to centred */
+	.page-template-page_landing .site-header {
+		@apply top-4;
+	}
+	.page-template-page_landing .site-header,
+	.page-template-page_landing .site-header .header-site-title {
+		@apply text-center;
+		@apply top-4;
+	}
+
+	.page-template-page_landing .site-header .header-navbar {
+		@apply justify-center;
+	}
+
+	.nav-centered .nav-menu {
+		@apply justify-center;
+	}
+
+	.landing-page .header-navbar {
+		padding-left: 0;
+	}
+
+	.container {
+		@apply w-full h-full mx-auto break-words;
+	}
+	/* ---------------------------------------------------------------
+     Swiper navigation buttons
+     --------------------------------------------------------------- */
+	.swiper-button-prev,
+	.swiper-button-next {
+		@apply top-1/2 z-[5000] -translate-y-1/2;
+	}
+	.swiper-button-prev {
+		@apply right-auto;
+	}
+	.swiper-button-next {
+		@apply left-auto;
+	}
+	.swiper-button-prev::after,
+	.swiper-button-next::after {
+		@apply text-[2rem]!;
+	}
+
+	.swiper-button .arrow {
+		@apply block text-[2rem] pointer-events-none;
+	}
+
+	/* ---------------------------------------------------------------
+     Slides
+     --------------------------------------------------------------- */
+	.swiper-slide {
+		@apply overflow-hidden h-auto;
+	}
+	.swiper-slide img {
+		@apply w-full h-auto object-contain;
+		max-height: 80vh;
+	}
+
+	/* ---------------------------------------------------------------
+     Wrappers — IDs, and state toggled by JS
+     --------------------------------------------------------------- */
+	#swiper,
+	#thumbs-outer,
+	#swiper-outer {
+		@apply w-full relative mx-auto;
+		max-width: 75vw;
+	}
+
+	#swiper-outer {
+		@apply mx-auto items-center;
+	}
+	#thumbs-outer {
+		@apply flex justify-center items-center;
+		max-width: min(75vw, 100%);
+	}
+
+	#swiper-wrapper {
+		@apply items-center;
+	}
+	#swiper-wrapper.hide {
+		@apply h-0;
+	}
+
+	#swiper {
+		@apply opacity-100 visible w-full;
+		transition: opacity 0.3s ease-in-out;
+	}
+
+	#swiper.hidden,
+	#swiper-outer.hide {
+		@apply opacity-0 invisible h-0;
+	}
+
+	#thumbs {
+		@apply hidden opacity-0 invisible;
+		transition: opacity 0.3s ease-in-out;
+	}
+	#thumbs.visible {
+		@apply block opacity-100 visible;
+	}
+
+	#thumbs.portfolio.visible {
+		@apply grid grid-cols-1 gap-6 opacity-100 visible;
+		/* no min-height, max-height, height, content-start or overflow */
+	}
+
+	/* extra 1px lets the window scroll while the grid is open, grid stays centred */
+	main.portfolio-page:has(#thumbs.visible) {
+		min-height: calc(100vh + 1px);
+	}
+
+	@media (min-width: 768px) {
+		#thumbs.portfolio.visible {
+			@apply grid grid-cols-2 gap-6 opacity-100 visible;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		#thumbs.portfolio.visible {
+			@apply grid grid-cols-3 gap-6 opacity-100 visible;
+		}
+	}
+
+	/* ---------------------------------------------------------------
+     Thumbnails
+     --------------------------------------------------------------- */
+	#thumbs.video.masonry li.thumb-item {
+		@apply w-full relative bg-white p-[10px] rounded-none cursor-pointer;
+		transition: transform 0.3s ease;
+	}
+	li.thumb-item {
+		@apply justify-center items-center;
+	}
+
+	/* ---------------------------------------------------------------
+     Video overlay
+     --------------------------------------------------------------- */
+	#swiper .video-overlay,
+	#swiper .video-container {
+		@apply relative overflow-hidden w-full h-full;
+	}
+
+	#swiper .video-overlay iframe {
+		@apply w-full h-auto;
+		max-height: 65vh;
+	}
+	#swiper .video-overlay iframe.landscape {
+		aspect-ratio: 16 / 9;
+	}
+	#swiper .video-overlay iframe.portrait {
+		aspect-ratio: 9 / 16;
+	}
+	#swiper .video-overlay.landscape {
+		padding-top: 56.25%;
+	}
+	#swiper .video-overlay.portrait {
+		padding-top: 177.77%;
+	}
+
+	span.video-play {
+		@apply absolute;
+	}
+
+	#swiper .video-overlay video {
+		width: auto;
+		height: auto;
+		margin: auto;
+	}
+
+	#thumbs.video.masonry li.thumb-item {
+		width: 100%;
+		position: relative;
+		background-color: white;
+		padding: 10px;
+		border-radius: 0px;
+		transition: transform 0.3s ease;
+		cursor: pointer;
+	}
+
+	@media (min-width: 768px) {
+		#thumbs.video.masonry li.thumb-item {
+			width: 323px;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		#thumbs.video.masonry li.thumb-item {
+			width: 256px;
+		}
+	}
+
+	@media (min-width: 1280px) {
+		#thumbs.video.masonry li.thumb-item {
+			width: 275px;
+		}
+	}
+
+	.fade-in {
+		@apply opacity-0;
+		transform: translateY(10px);
+		transition:
+			opacity 0.5s ease-out,
+			transform 0.5s ease-out;
+	}
+	.fade-in-visible {
+		@apply opacity-100;
+		transform: translateY(0);
+	}
+
+	.pointer {
+		@apply cursor-pointer;
+	}
+
+	.entry-content {
+		@apply max-w-screen overflow-hidden relative;
+	}
+
+	::-webkit-scrollbar {
+		width: 13px;
+		height: 13px;
+		background: #111111;
+	}
+	::-webkit-scrollbar-thumb {
+		background: #111111;
+	}
+
+	/* ---------------------------------------------------------------
+     Woo
+     --------------------------------------------------------------- */
+
+	.single-product div.product {
+		@apply grid grid-cols-1 gap-10 md:grid-cols-12;
+	}
+	.single-product .woocommerce-product-gallery {
+		@apply md:col-span-9;
+	}
+	.single-product .summary {
+		@apply md:col-span-3;
+	}
+}
+.woocommerce .button,
+.woocommerce button.button,
+.woocommerce input.button,
+.woocommerce #respond input#submit,
+.woocommerce a.button.alt,
+.woocommerce button.button.alt,
+.woocommerce .single_add_to_cart_button {
+	@apply inline-flex items-center justify-center rounded-none bg-black px-8 py-4
+           text-sm uppercase tracking-widest text-white transition-colors
+           hover:bg-neutral-800 focus:outline-none focus-visible:ring-2
+           focus-visible:ring-black focus-visible:ring-offset-2;
+}
+.woocommerce .quantity .qty {
+	@apply w-16 rounded-none border border-neutral-300 px-3 py-4 text-center
+           text-sm focus:border-black focus:outline-none;
+}
+.woocommerce div.product form.cart .button,
+.woocommerce div.product form.cart .single_add_to_cart_button {
+	background-color: #000;
+	color: #fff;
+	border-radius: 0;
+	padding: 1rem 2rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	font-size: 0.875rem;
+}
+.woocommerce div.product form.cart {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.woocommerce div.product form.cart .button:hover {
+	background-color: #262626;
+}
+.woocommerce span.onsale {
+	@apply bg-black text-white;
+}
+.woocommerce .star-rating span::before {
+	color: currentColor;
+}

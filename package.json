@@ -1,0 +1,27 @@
+{
+  "name": "shaneshop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tailwindcss -i src/tailwind.css -o dist/style.css --watch",
+    "build": "tailwindcss -i src/tailwind.css -o dist/style.css --minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.18.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.18.0",
+  "type": "module",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.5",
+    "prettier": "^3.10.1",
+    "tailwindcss": "^4.3.5"
+  }
+}
