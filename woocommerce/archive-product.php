@@ -32,9 +32,9 @@ $products = wc_get_products( $args );
 					?>
 					<div class="swiper-slide">
 						<a href="<?php echo esc_url( $product->get_permalink() ); ?>"
-						   class="block group relative">
-						   <div class="relative overflow-hidden">		   	
-								<img class="swiper-lazy"
+						   class="block group relative w-fit mx-auto">
+						   <div class="relative overflow-hidden w-fit">		   	
+								<img class="swiper-lazy block h-full w-auto max-h-[70vh] object-contain"
 								     loading="lazy"
 								     src="<?php echo esc_url( $src[0] ); ?>"
 								     alt="<?php echo esc_attr( $product->get_name() ); ?>"/>
