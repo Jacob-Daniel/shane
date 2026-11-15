@@ -10,7 +10,7 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<header class="site-header fixed left-0 z-[1000] w-full p-4">
+<header class="site-header fixed left-0 z-[1000] w-full p-4 bg-white">
   <div class="header-site-title">
     <h1 class="site-title">
       <a href="<?php echo esc_url(home_url('/')); ?>"><?php bloginfo('name'); ?></a>
