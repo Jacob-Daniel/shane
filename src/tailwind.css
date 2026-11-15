@@ -13,7 +13,7 @@
 		background-color: #ffffff;
 		color: #111111;
 		font-family: var(--font-sans);
-		font-size: 0.875rem;
+		font-size: 14px;
 		-webkit-font-smoothing: antialiased;
 		font-weight: 400;
 		line-height: 1.15;
@@ -315,45 +315,129 @@
 	.single-product .summary {
 		@apply md:col-span-3;
 	}
+
+	.archive-product-search .woocommerce-loop-product__title {
+		@apply text-sm font-medium;
+	}
+	.archive-product-search .price,
+	.archive-product-search .added_to_cart.wc-forward,
+	.archive-product-search .woocommerce-loop-product__title {
+		@apply !text-xs !mt-0 !text-white;
+	}
+	.woocommerce.archive.search.search-results
+		.archive-product-search
+		li.product
+		.button {
+		@apply mt-2 !text-[0.7rem] !text-white cursor-pointer !p-0 !bg-transparent;
+	}
+	.archive-product-search .onsale {
+		@apply absolute left-2 top-2 rounded bg-red-600 px-2 py-1 text-xs text-white;
+	}
+	.product-panel img {
+		@apply w-full h-auto;
+	}
 }
-.woocommerce .button,
+
+.woocommerce a.button,
 .woocommerce button.button,
 .woocommerce input.button,
 .woocommerce #respond input#submit,
-.woocommerce a.button.alt,
-.woocommerce button.button.alt,
-.woocommerce .single_add_to_cart_button {
-	@apply inline-flex items-center justify-center rounded-none bg-black px-8 py-4
-           text-sm uppercase tracking-widest text-white transition-colors
-           hover:bg-neutral-800 focus:outline-none focus-visible:ring-2
-           focus-visible:ring-black focus-visible:ring-offset-2;
+.woocommerce .single_add_to_cart_button,
+.woocommerce .wc-forward {
+	@apply px-0 py-0
+           text-sm uppercase tracking-widest text-black transition-colors
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-black
+           focus-visible:ring-offset-2;
+}
+
+.wc-block-cart .wc-block-components-button.wp-element-button.contained {
+	@apply !bg-transparent !text-black !p-0 !rounded-none;
+}
+
+.wc-block-cart__submit-button {
+	@apply w-auto self-start;
+}
+.woocommerce .archive-product-search a.added_to_cart.wc-forward {
+	font-weight: 800;
+	font-size: 0.875rem;
+	padding-top: 0px;
 }
 .woocommerce .quantity .qty {
 	@apply w-16 rounded-none border border-neutral-300 px-3 py-4 text-center
            text-sm focus:border-black focus:outline-none;
 }
+
+.woocommerce .quantity .qty {
+	@apply w-16 rounded-none border border-neutral-300 px-3 py-4 text-center
+           text-sm focus:border-black focus:outline-none;
+}
+
 .woocommerce div.product form.cart .button,
+.woocommerce-cart.page
+	a.wc-block-components-button.wp-element-button.wc-block-cart__submit-button,
 .woocommerce div.product form.cart .single_add_to_cart_button {
-	background-color: #000;
-	color: #fff;
+	color: black;
+	background-color: transparent;
 	border-radius: 0;
-	padding: 1rem 2rem;
 	text-transform: uppercase;
 	letter-spacing: 0.1em;
-	font-size: 0.875rem;
+	font-size: 0.7rem;
+	font-weight: 800;
+	padding: 0px !important;
 }
 .woocommerce div.product form.cart {
 	display: flex;
 	flex-direction: column;
+	align-items: start;
 	gap: 1rem;
 }
-
+.woocommerce div.product form.cart .single_add_to_cart_button:hover {
+	background-color: transparent !important;
+}
 .woocommerce div.product form.cart .button:hover {
 	background-color: #262626;
 }
 .woocommerce span.onsale {
 	@apply bg-black text-white;
 }
-.woocommerce .star-rating span::before {
-	color: currentColor;
+
+.woocommerce .star-rating span::before,
+.woocommerce-message::before,
+.woocommerce-message::after,
+.woocommerce-info::before,
+.woocommerce-info::after,
+.woocommerce-error::before,
+.woocommerce-error::after {
+	content: none;
+	display: none;
+}
+
+.woocommerce-breadcrumb a {
+	@apply text-xs !capitalize tracking-widest text-neutral-500;
+}
+.woocommerce-breadcrumb a {
+	@apply text-neutral-900 hover:text-neutral-500;
+}
+
+.woocommerce-notices-wrapper {
+	@apply mx-auto w-full p-0 m-0;
+}
+
+.woocommerce-message,
+.woocommerce-info,
+.woocommerce-error {
+	@apply mb-6 flex flex-wrap items-end m-0 p-0 gap-3 border-0 border-none
+           bg-transparent text-sm text-neutral-900;
+}
+
+.woocommerce-error {
+	@apply border-red-600 bg-red-50;
+}
+
+/* the "View cart" button inside the notice */
+.woocommerce-message a.button.wc-forward,
+.woocommerce-message .button,
+.woocommerce-message .wc-forward {
+	@apply inline-block bg-transparent p-0 text-xs uppercase
+           tracking-widest text-black;
 }

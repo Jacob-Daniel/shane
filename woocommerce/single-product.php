@@ -7,8 +7,8 @@ get_header( 'shop' );
 	<div class="mx-auto w-full max-w-5xl">
 
 		<div class="flex items-center justify-between gap-4 py-4">
-			<nav class="breadcrumb text-sm"><?php woocommerce_breadcrumb(); ?></nav>
-			<div class="w-full max-w-xs"><?php get_product_search_form(); ?></div>
+			<?php woocommerce_breadcrumb(); ?>
+			<?php get_product_search_form(); ?>
 		</div>
 
 		<?php while ( have_posts() ) : the_post(); ?>

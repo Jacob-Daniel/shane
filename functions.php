@@ -78,6 +78,18 @@ add_action('wp_enqueue_scripts', function () {
 
 //Woo
 
+add_filter( 'template_include', function ( $template ) {
+    if ( is_search() && is_post_type_archive( 'product' ) ) {
+        $custom = locate_template( 'woocommerce/archive-product-search.php' );
+        if ( $custom ) return $custom;
+    }
+    return $template;
+}, 20 );
+
+add_filter( 'woocommerce_product_loop_start', function () {
+    return '<ul class="products grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">';
+} );
+
 add_action('wp_enqueue_scripts', function () {
     if ( ! is_woocommerce() && ! is_cart() && ! is_checkout() && ! is_account_page() ) {
         wp_dequeue_style('woocommerce-general');
@@ -160,6 +172,16 @@ add_action( 'cmb2_admin_init', function () {
             'type' => 'text',
         ]);
     }
+} );
+
+add_action( 'wp_enqueue_scripts', function () {
+    wp_enqueue_style( 'shaneshop', get_stylesheet_uri(), [ 'wc-blocks-style' ], null );
+}, 20 );
+
+add_filter( 'woocommerce_breadcrumb_defaults', function ( $defaults ) {
+    $defaults['home']      = is_product_category();
+    $defaults['delimiter'] = ' <span class="mx-2 text-neutral-400">/</span> ';
+    return $defaults;
 } );
 
 

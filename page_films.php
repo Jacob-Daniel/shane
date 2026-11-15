@@ -26,7 +26,7 @@ $remaining_array = array_values(array_filter($remaining_array));
 
 <main class="films-page flex flex-col items-center justify-center min-h-screen">
     <button data-text="BACK TO SLIDESHOW" id="load-more-thumbnails"
-            class="fixed block border-0 top-3 right-4 z-[6000] cursor-pointer">SHOW ALL</button>
+            class="fixed block border-0 top-3 right-4 z-[6000] cursor-pointer text-[0.7rem] font-extrabold">SHOW ALL</button>
 
     <div id="swiper-outer" class="film">
         <div id="swiper" class="swiper film flex justify-center items-center mx-auto relative visible">

@@ -4,42 +4,82 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const currentSlideEl = document.getElementById("current-slide");
     const totalSlidesEl = document.getElementById("total-slides");
+    let isPageLoaded = false;
 
-    const swiper = new Swiper(el, {
-        loop: false,
-        lazy: true,
-        preloadImages: false,
-        slidesPerView: 1,
-        spaceBetween: 0,
-        grabCursor: true,
-        simulateTouch: true,
-        // freeMode: false,
-        // freeModeMomentum: false,
-        // touchStartPreventDefault: false,
-        watchSlidesProgress: true,
-        navigation: {
-            nextEl: "#swiper-outer .swiper-button-next",
-            prevEl: "#swiper-outer .swiper-button-prev",
-        },
-        keyboard: { enabled: true, onlyInViewport: false },
-        on: {
-            init: function () {
-                this.update();
-                if (totalSlidesEl)
-                    totalSlidesEl.textContent = this.slides.length;
-                if (currentSlideEl)
-                    currentSlideEl.textContent = this.realIndex + 1;
+    function getSlideFromURL() {
+        const n = parseInt(
+            new URLSearchParams(window.location.search).get("slide"),
+            10,
+        );
+        return Number.isNaN(n) || n < 1 ? 0 : n - 1;
+    }
+
+    function updateURL(slideNumber) {
+        const url = new URL(window.location);
+        url.searchParams.set("slide", slideNumber);
+        console.log(slideNumber, "update");
+        window.history.pushState({}, "", url);
+    }
+
+    function createSwiper(initialSlide) {
+        return new Swiper(el, {
+            loop: false,
+            lazy: true,
+            preloadImages: false,
+            slidesPerView: 1,
+            spaceBetween: 0,
+            initialSlide,
+            grabCursor: true,
+            simulateTouch: true,
+            // freeMode: false,
+            // freeModeMomentum: false,
+            // touchStartPreventDefault: false,
+            watchSlidesProgress: true,
+            navigation: {
+                nextEl: "#swiper-outer .swiper-button-next",
+                prevEl: "#swiper-outer .swiper-button-prev",
             },
-            slideChange: function () {
-                if (currentSlideEl)
-                    currentSlideEl.textContent = this.realIndex + 1;
+            keyboard: { enabled: true, onlyInViewport: false },
+            on: {
+                init: function () {
+                    this.update();
+                    if (totalSlidesEl)
+                        totalSlidesEl.textContent = this.slides.length;
+                    if (currentSlideEl)
+                        currentSlideEl.textContent = this.realIndex + 1;
+                },
+                slideChange: function () {
+                    if (currentSlideEl)
+                        currentSlideEl.textContent = this.realIndex + 1;
+                    if (isPageLoaded) updateURL(this.activeIndex + 1);
+                },
+                click: function (s, e) {
+                    const slide = e.target.closest(".swiper-slide");
+                    const link = slide && slide.querySelector("a");
+                    if (link && s.allowClick) window.location.href = link.href;
+                },
             },
-            click: function (s, e) {
-                const slide = e.target.closest(".swiper-slide");
-                const link = slide && slide.querySelector("a");
-                if (link && s.allowClick) window.location.href = link.href;
-            },
-        },
+        });
+    }
+
+    let swiper = createSwiper(getSlideFromURL());
+
+    window.addEventListener("load", () => {
+        isPageLoaded = true;
+    });
+
+    window.addEventListener("orientationchange", function () {
+        if (!swiper) return;
+        const currentIndex = swiper.activeIndex;
+        swiper.destroy(true, true);
+        requestAnimationFrame(function () {
+            swiper = createSwiper(currentIndex);
+            setTimeout(() => {
+                swiper.update();
+                swiper.updateSlides();
+                swiper.updateSize();
+            }, 100);
+        });
     });
 
     /* Arrow follow — same as folio, scoped to the shop wrapper. */
