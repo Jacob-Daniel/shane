@@ -2,12 +2,21 @@
 
 get_header( 'shop' );
 
-$products = wc_get_products([
+$term = get_queried_object();
+
+$args = [
     'limit'   => -1,
     'status'  => 'publish',
     'orderby' => 'menu_order',
     'order'   => 'ASC',
-]);
+];
+
+if ( $term instanceof WP_Term && 'product_cat' === $term->taxonomy ) {
+    $args['category'] = [ $term->slug ];
+}
+
+$products = wc_get_products( $args );
+
 ?>
 <main class="shop-page flex flex-col items-center justify-center min-h-screen">
 
