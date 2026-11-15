@@ -179,9 +179,13 @@ add_action( 'wp_enqueue_scripts', function () {
 }, 20 );
 
 add_filter( 'woocommerce_breadcrumb_defaults', function ( $defaults ) {
-    $defaults['home']      = is_product_category();
+    $defaults['home']      = false; 
     $defaults['delimiter'] = ' <span class="mx-2 text-neutral-400">/</span> ';
     return $defaults;
+} );
+
+add_filter( 'woocommerce_breadcrumb_home_url', function () {
+    return wc_get_page_permalink( 'shop' );
 } );
 
 

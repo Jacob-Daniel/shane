@@ -8,6 +8,9 @@
 	--font-franklin: "franklin-gothic-atf", sans-serif;
 }
 
+/* Custom variant: only when <body> has the .home class */
+@custom-variant home (&:where(body.home *));
+
 @layer base {
 	body {
 		background-color: #ffffff;
@@ -22,6 +25,27 @@
 }
 
 @layer components {
+	.header-navbar header {
+		@apply bg-white;
+	}
+
+	.header-navbar button {
+		@apply text-black;
+	}
+
+	.header-navbar button svg {
+		@apply fill-black;
+	}
+
+	/* ---------- body.home ---------- */
+	body.home .header-navbar button {
+		@apply text-white;
+	}
+
+	body.home .header-navbar button svg {
+		@apply fill-white;
+	}
+
 	/* Default: every page except landing */
 	.header-site-title {
 		@apply flex flex-col gap-y-1 text-black uppercase;
