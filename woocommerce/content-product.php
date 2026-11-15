@@ -12,7 +12,7 @@ if ( ! is_a( $product, WC_Product::class ) || ! $product->is_visible() ) {
 }
 ?>
 <li <?php wc_product_class( 'group relative overflow-hidden flex flex-col justify-center ', $product ); ?>>
-	<div class="relative overflow-hidden">
+	<div class="relative overflow-hidden w-fit mx-auto">
 		<?php do_action( 'woocommerce_before_shop_loop_item' ); ?>
 		<?php do_action( 'woocommerce_before_shop_loop_item_title' ); ?>
 
