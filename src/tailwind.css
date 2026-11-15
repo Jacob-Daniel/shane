@@ -25,7 +25,7 @@
 }
 
 @layer components {
-	.header-navbar header {
+	header.site-header {
 		@apply bg-white;
 	}
 
@@ -41,9 +41,11 @@
 	body.home .header-navbar button {
 		@apply text-white;
 	}
-
 	body.home .header-navbar button svg {
 		@apply fill-white;
+	}
+	body.home header.site-header {
+		@apply bg-transparent;
 	}
 
 	/* Default: every page except landing */
