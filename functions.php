@@ -188,6 +188,34 @@ add_filter( 'woocommerce_breadcrumb_home_url', function () {
     return wc_get_page_permalink( 'shop' );
 } );
 
+add_action( 'phpmailer_init', function ( $phpmailer ) {
+    if ( ! defined( 'SMTP_HOST' ) || ! defined( 'SMTP_USER' ) || ! defined( 'SMTP_PASS' ) ) {
+        error_log( 'Mail config missing: check SMTP_* constants in wp-config.php' );
+        return;
+    }
+
+    $phpmailer->isSMTP();
+    $phpmailer->Host       = SMTP_HOST;
+    $phpmailer->Port       = defined( 'SMTP_PORT' ) ? SMTP_PORT : 587;
+    $phpmailer->SMTPAuth   = true;
+    $phpmailer->Username   = SMTP_USER;
+    $phpmailer->Password   = SMTP_PASS;
+    $phpmailer->SMTPSecure = defined( 'SMTP_SECURE' ) ? SMTP_SECURE : 'tls';
+    $phpmailer->CharSet    = 'UTF-8';
+
+    if ( defined( 'MAIL_FROM' ) && is_email( MAIL_FROM ) ) {
+        $phpmailer->setFrom( MAIL_FROM, defined( 'MAIL_FROM_NAME' ) ? MAIL_FROM_NAME : get_bloginfo( 'name' ) );
+    }
+
+    if ( defined( 'MAIL_BCC' ) && is_email( MAIL_BCC ) ) {
+        $phpmailer->addBCC( MAIL_BCC );
+    }
+} );
+
+add_action( 'wp_mail_failed', function ( $error ) {
+    error_log( 'wp_mail failed: ' . print_r( $error->get_error_message(), true ) );
+} );
+
 
 // Legacy removed block styles.
 add_action('wp_enqueue_scripts', function () {
