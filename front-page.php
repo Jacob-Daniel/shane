@@ -1,8 +1,6 @@
 <?php
 /**
- * Template Name: Landing
- *
- * @package Shaneshop
+  * @package Shaneshop
  */
 
 get_header();

@@ -94,8 +94,7 @@
 	}
 
 	.site-header {
-		@apply top-0;
-		@apply text-left;
+		@apply top-0 text-left p-4;
 	}
 	.site-header .header-site-title {
 		@apply text-left;
@@ -104,14 +103,31 @@
 		@apply justify-start;
 	}
 
+	body.home h1 {
+		font-size: 1.4rem;
+	}
+	body.home h1,
+	body.home .nav-menu a {
+		@apply text-white;
+	}
+
+	body.home .site-header {
+		@apply top-0 text-center pt-10;
+	}
+	body.home .site-header .header-site-title {
+		@apply text-center;
+	}
+	body.home .site-header .header-navbar {
+		@apply justify-center;
+	}
+
 	/* Landing overrides back to centred */
 	.page-template-page_landing .site-header {
 		@apply top-4;
 	}
 	.page-template-page_landing .site-header,
 	.page-template-page_landing .site-header .header-site-title {
-		@apply text-center;
-		@apply top-4;
+		@apply text-center top-4;
 	}
 
 	.page-template-page_landing .site-header .header-navbar {
@@ -166,7 +182,6 @@
      Wrappers — IDs, and state toggled by JS
      --------------------------------------------------------------- */
 	#swiper,
-	#thumbs-outer,
 	#swiper-outer {
 		@apply w-full relative mx-auto;
 		max-width: 75vw;
@@ -176,7 +191,7 @@
 		@apply mx-auto items-center;
 	}
 	#thumbs-outer {
-		@apply flex justify-center items-center;
+		@apply flex justify-center items-center w-full relative mx-auto;
 		max-width: min(75vw, 100%);
 	}
 
@@ -210,6 +225,10 @@
 		/* no min-height, max-height, height, content-start or overflow */
 	}
 
+	#gallery-slider-counter {
+		@apply fixed p-4 right-0 bottom-0 z-[99999];
+	}
+
 	/* extra 1px lets the window scroll while the grid is open, grid stays centred */
 	main.portfolio-page:has(#thumbs.visible) {
 		min-height: calc(100vh + 1px);
@@ -232,7 +251,6 @@
      --------------------------------------------------------------- */
 	#thumbs.video.masonry li.thumb-item {
 		@apply w-full relative bg-white p-[10px] rounded-none cursor-pointer;
-		transition: transform 0.3s ease;
 	}
 	li.thumb-item {
 		@apply justify-center items-center;
@@ -281,6 +299,8 @@
 		border-radius: 0px;
 		transition: transform 0.3s ease;
 		cursor: pointer;
+		object-fit: cover;
+		display: block;
 	}
 
 	@media (min-width: 768px) {

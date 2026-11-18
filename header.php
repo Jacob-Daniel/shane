@@ -1,5 +1,3 @@
-<?php // header.php
-?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -10,7 +8,7 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<header class="site-header fixed left-0 z-[1000] w-full p-4">
+<header class="site-header fixed left-0 z-[1000] w-full">
   <div class="header-site-title flex flex-col gap-[0.3rem]">
     <h1 class="site-title">
       <a href="<?php echo esc_url(home_url('/')); ?>"><?php bloginfo('name'); ?></a>

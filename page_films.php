@@ -7,38 +7,37 @@
 
 get_header();
 
-$entries = shaneshop_get_entries();
-$initial = 5;
-$bg      = get_post_meta(get_the_ID(), 'gallery_page_background', true) ?: '#ffffff';
+$post_id = get_the_ID();
+$entries = shaneshop_get_entries($post_id);
+$items   = shaneshop_normalise_entries($entries);   // single source of truth
+$initial = 15;                                        // matches data-first-batch
+$bg      = get_post_meta($post_id, 'gallery_page_background', true) ?: '#ffffff';
 
-$total_images      = count($entries);
-$remaining_images  = array_slice($entries, $initial);
-$remaining_array   = array_map(function ($entry) {
-    $mp4_url = !empty($entry['gallery_item_video_mp4']) ? esc_url($entry['gallery_item_video_mp4']) : '';
-    return $mp4_url ? [
-        "type" => "video",
-        "id"   => $entry['gallery_item_video_mp4_id'],
-        "url"  => $mp4_url,
-    ] : null;
-}, $remaining_images);
-$remaining_array = array_values(array_filter($remaining_array));
+$total = count($items);
 ?>
 
-<main class="films-page flex flex-col items-center justify-center min-h-screen">
+<main class="films-page flex flex-col items-center justify-center min-h-screen"
+      id="films-gallery"
+      data-endpoint="<?php echo esc_url(rest_url('shaneshop/v1/films/' . $post_id)); ?>"
+      data-nonce="<?php echo esc_attr(wp_create_nonce('wp_rest')); ?>"
+      data-batch-size="5"
+      data-first-batch="<?php echo esc_attr($initial); ?>"
+      data-total="<?php echo esc_attr($total); ?>">
+
     <button data-text="BACK TO SLIDESHOW" id="load-more-thumbnails"
             class="fixed block border-0 top-3 right-4 z-[6000] cursor-pointer text-[0.7rem] font-extrabold">SHOW ALL</button>
 
     <div id="swiper-outer" class="film">
         <div id="swiper" class="swiper film flex justify-center items-center mx-auto relative visible">
             <div id="swiper-wrapper" class="swiper-wrapper items-center">
-                <?php render_gallery_slide($entries); ?>
+                <?php render_gallery_slide($items); ?>
             </div>
             <div id="slide-info" class="z-[9999] fixed left-4 bottom-4 max-w-[500px]">
                 <div id="gallery-description" class="gallery-description"></div>
                 <h2 id="gallery-title" class="text-2xl"></h2>
             </div>
             <div id="gallery-slider-counter" class="gallery-slider-counter">
-                <span id="current-slide">1</span>/<span id="total-slides"></span>
+                <span id="current-slide">1</span>/<span id="total-slides"><?php echo esc_html($total); ?></span>
             </div>
         </div>
         <div id="swiper-button-next" class="swiper-button swiper-button-next text-black text-[10px] z-[5000] absolute"></div>
@@ -46,17 +45,12 @@ $remaining_array = array_values(array_filter($remaining_array));
     </div>
 
     <div id="thumbs-outer">
-        <ul id="thumbs" class="thumbs video masonry w-full ml-0">
-            <?php render_gallery_entries($entries, $initial); ?>
+        <ul id="thumbs" class="thumbs video masonry w-full mt-[100px]">
+            <?php render_gallery_entries($items, $initial); ?>
         </ul>
     </div>
 
-    <?php if ($remaining_array) : ?>
-    <script>
-        window.remainingImages = <?php echo json_encode($remaining_array); ?>;
-    </script>
-    <?php endif; ?>
+    <button id="show-slider" style="display:none">SHOW SLIDER</button>
 </main>
-
 
 <?php get_footer(); ?>

@@ -26,6 +26,47 @@ add_action('after_setup_theme', function () {
     add_theme_support( 'wc-product-gallery-slider' );
 });
 
+add_action('rest_api_init', function () {
+    register_rest_route('films/v1', '/videos', [
+        'methods'             => 'GET',
+        'permission_callback' => '__return_true',
+        'args' => [
+            'page'     => ['default' => 1, 'sanitize_callback' => 'absint'],
+            'per_page' => ['default' => 5, 'sanitize_callback' => 'absint'],
+        ],
+        'callback' => function (WP_REST_Request $req) {
+            $page     = max(1, $req['page']);
+            $per_page = min(20, max(1, $req['per_page']));
+
+            $q = new WP_Query([
+                'post_type'      => 'film',
+                'posts_per_page' => $per_page,
+                'paged'          => $page,
+                'meta_key'       => '_film_video_url',
+                'orderby'        => 'menu_order',
+                'order'          => 'ASC',
+            ]);
+
+            $items = [];
+            foreach ($q->posts as $post) {
+                $items[] = [
+                    'id'    => $post->ID,
+                    'title' => get_the_title($post),
+                    'url'   => get_post_meta($post->ID, '_film_video_url', true),
+                    'thumb' => get_the_post_thumbnail_url($post->ID, 'medium'),
+                    'vimeo' => get_post_meta($post->ID, '_film_vimeo_id', true),
+                    'ytb'   => get_post_meta($post->ID, '_film_youtube_id', true),
+                ];
+            }
+
+            $res = rest_ensure_response($items);
+            $res->header('X-WP-Total', $q->found_posts);
+            $res->header('X-WP-TotalPages', $q->max_num_pages);
+            return $res;
+        },
+    ]);
+});
+
 add_filter('document_title_separator', fn() => '–');
 
 add_filter( 'nav_menu_css_class', function ( $classes, $item, $args ) {
@@ -41,6 +82,13 @@ add_action('wp_head', function () {
     }
 }, 1);
 
+add_filter('script_loader_tag', function ($tag, $handle) {
+    if (in_array($handle, ['swiper', 'gsap', 'masonry-js'], true)) {
+        return str_replace('<script ', '<script defer ', $tag);
+    }
+    return $tag;
+}, 10, 2);
+
 add_action('wp_enqueue_scripts', function () {
     $films     = is_page_template('page_films.php');
     $portfolio = is_page_template('page_portfolio.php');
@@ -53,14 +101,14 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style( 'shaneshop-tailwind', get_stylesheet_directory_uri() . '/dist/style.css', array(), filemtime( get_stylesheet_directory() . '/dist/style.css' ) );
 
     if ($films || $portfolio) {
-        wp_enqueue_style('swiper-style', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.css');
-        wp_enqueue_script('swiper', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.js', array(), null, true);
-        wp_enqueue_script('gsap', 'https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js', [], null, true);
+        wp_enqueue_style('swiper-style', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.css', [], '11.0.5');
+        wp_enqueue_script('swiper', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.js', [], '11.0.5', false);
+        wp_enqueue_script('gsap', 'https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js', [], null, false);
 
     }
     if ($films) {
-        wp_enqueue_script('masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', array(), '', true);
-        wp_enqueue_script('films', SHANESHOP_URI . '/js/films.js', ['swiper', 'gsap'], SHANESHOP_VERSION, true);
+        wp_enqueue_script('masonry-js', 'https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js', array(), '4.2.2', false);
+        wp_enqueue_script_module('films', SHANESHOP_URI . '/js/main.js', [], SHANESHOP_VERSION);
     }
     if ($portfolio) {
         wp_enqueue_script('folio', SHANESHOP_URI . '/js/folio.js', ['swiper', 'gsap'], SHANESHOP_VERSION, true);
@@ -210,10 +258,6 @@ add_action( 'phpmailer_init', function ( $phpmailer ) {
     if ( defined( 'MAIL_BCC' ) && is_email( MAIL_BCC ) ) {
         $phpmailer->addBCC( MAIL_BCC );
     }
-} );
-
-add_action( 'wp_mail_failed', function ( $error ) {
-    error_log( 'wp_mail failed: ' . print_r( $error->get_error_message(), true ) );
 } );
 
 add_filter( 'woocommerce_is_purchasable', function ( $purchasable, $product ) {

@@ -139,6 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const v = video.closest("video");
                     v.load();
                     v.addEventListener("mouseenter", () => {
+                        console.log("ent");
                         v.play();
                         v.muted = false;
                     });
