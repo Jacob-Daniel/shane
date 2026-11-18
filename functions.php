@@ -216,6 +216,9 @@ add_action( 'wp_mail_failed', function ( $error ) {
     error_log( 'wp_mail failed: ' . print_r( $error->get_error_message(), true ) );
 } );
 
+add_filter( 'woocommerce_is_purchasable', function ( $purchasable, $product ) {
+    return $product->is_type( 'grouped' ) ? true : $purchasable;
+}, 10, 2 );
 
 // Legacy removed block styles.
 add_action('wp_enqueue_scripts', function () {

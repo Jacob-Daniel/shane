@@ -11,6 +11,8 @@ $args = [
     'order'   => 'ASC',
 ];
 
+$args['visibility'] = 'catalog';
+
 if ( $term instanceof WP_Term && 'product_cat' === $term->taxonomy ) {
     $args['category'] = [ $term->slug ];
 }
