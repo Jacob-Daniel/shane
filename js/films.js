@@ -27,14 +27,14 @@ let masonry = null;
 masonry = masonryEl ? initMasonry(masonryEl) : null;
 
 // Swiper first — arrows need the instance.
-const gallery = initSwiperGallery({ root, player });
+const gallery = initSwiperGallery({ root, player, loop: false });
 
 // Arrows after Swiper exists.
 const arrows = initArrows(root, gallery);
 arrows?.attach();
 gallery.swiper.on("init resize", () => arrows?.refreshRects());
 
-// gallery.swiper.on("slideChange", (sw) => gallery.syncURL(sw.realIndex + 1)); // 1 based
+gallery.swiper.on("slideChange", (sw) => gallery.syncURL(sw.realIndex + 1)); // 1 based
 
 const thumbs = initThumbnails({
 	root,

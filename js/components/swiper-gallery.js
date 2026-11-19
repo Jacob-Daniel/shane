@@ -105,15 +105,6 @@ export function initSwiperGallery({
             jumpTo(swiper, index - 1, 500);
         },
         syncURL(index) {
-            // console.trace(
-            //     "syncURL",
-            //     index,
-            //     "ready:",
-            //     ready,
-            //     "url:",
-            //     location.search,
-            // );
-
             if (ready) updateURL(index);
         },
         updateSlideInfo: () => updateSlideInfo(swiper),
