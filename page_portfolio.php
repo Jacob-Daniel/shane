@@ -93,7 +93,7 @@ $remaining_array = array_map(function ($item) {
     </div>
 
     <div id="thumbs-outer" class="justify-center items-center relative">
-        <ul id="thumbs" class="thumbs portfolio w-full ml-0">
+        <ul id="thumbs" class="thumbs portfolio w-full ml-0 mt-[100px]">
             <?php
             foreach (array_slice($items, 0, $initial) as $item) {
                 echo '<li class="thumb-item list-none flex" aria-label="' . ($item['index'] - 1) . '" data-index="' . $item['index'] . '">';
