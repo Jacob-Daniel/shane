@@ -8,7 +8,7 @@
 get_header();
 
 $items   = shaneshop_normalise_portfolio(shaneshop_get_entries());
-$initial = 5;
+$initial = 10;
 $bg      = get_post_meta(get_the_ID(), 'gallery_page_background', true) ?: '#ffffff';
 
 $remaining_array = array_map(function ($item) {
