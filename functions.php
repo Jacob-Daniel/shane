@@ -24,6 +24,7 @@ add_action('after_setup_theme', function () {
     add_theme_support( 'wc-product-gallery-zoom' );
     add_theme_support( 'wc-product-gallery-lightbox' );
     add_theme_support( 'wc-product-gallery-slider' );
+
 });
 
 add_action('rest_api_init', function () {
@@ -80,6 +81,10 @@ add_action('wp_head', function () {
     if (is_front_page()) {
         echo '<meta name="description" content="' . esc_attr(get_bloginfo('description')) . '">' . "\n";
     }
+    echo '<link rel="preconnect" href="https://use.typekit.net" crossorigin>' . "\n";
+    echo '<link rel="preconnect" href="https://p.typekit.net" crossorigin>' . "\n";
+    echo '<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>' . "\n";
+
 }, 1);
 
 add_filter('script_loader_tag', function ($tag, $handle) {
@@ -88,20 +93,21 @@ add_filter('script_loader_tag', function ($tag, $handle) {
     }
     return $tag;
 }, 10, 2);
+add_filter('style_loader_tag', function ($tag, $handle) {
+    if ('typekit' === $handle) {
+        $tag = str_replace("media='all'", "media='print' onload=\"this.media='all'\"", $tag);
+    }
+    return $tag;
+}, 10, 2);
+
 
 add_action('wp_enqueue_scripts', function () {
     $films     = is_page_template('page_films.php');
     $portfolio = is_page_template('page_portfolio.php');
     $shop      = is_shop() || is_product_category();
 
-    wp_enqueue_style( 'typekit', 'https://use.typekit.net/lcj8zuc.css', array(), null );
-    wp_enqueue_style('shaneshop', SHANESHOP_URI . '/style.css', ['typekit'], SHANESHOP_VERSION);
-    // wp_enqueue_script('fitvids', SHANESHOP_URI . '/js/fitvids.js', ['jquery'], SHANESHOP_VERSION, true);
-    wp_enqueue_script('shaneshop-nav', SHANESHOP_URI . '/js/nav.js', [], SHANESHOP_VERSION, true);
-    wp_enqueue_style( 'shaneshop-tailwind', get_stylesheet_directory_uri() . '/dist/style.css', array(), filemtime( get_stylesheet_directory() . '/dist/style.css' ) );
-
     if ($films || $portfolio) {
-        wp_enqueue_style('swiper-style', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css', [], '11.0.5');
+        // wp_enqueue_style('swiper-style', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css', [], '11.0.5');
         wp_enqueue_script('swiper', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js', [], '11.0.5', false);
         wp_enqueue_script('gsap', 'https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js', [], null, false);
 
@@ -116,11 +122,24 @@ add_action('wp_enqueue_scripts', function () {
 
     //Woo
     if ($shop) {
-        wp_enqueue_style('swiper-style', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.css');
+        // wp_enqueue_style('swiper-style', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.css');
         wp_enqueue_script('swiper', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.js', [], null, true);
         wp_enqueue_script('gsap', 'https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js', [], null, true);
         wp_enqueue_script('shop-slider', SHANESHOP_URI . '/js/shop.js', ['swiper', 'gsap'], SHANESHOP_VERSION, true);
     }
+    
+    // wp_add_inline_style('shaneshop', file_get_contents(get_stylesheet_directory() . '/dist/style.css'));
+    wp_register_script('shaneshop-nav', false, [], SHANESHOP_VERSION, true);
+    wp_enqueue_script('shaneshop-nav');
+    wp_add_inline_script('shaneshop-nav', <<<'JS'
+    document.querySelectorAll('.site-nav__toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!open));
+        btn.closest('.site-nav').classList.toggle('is-open', !open);
+      });
+    });
+    JS);
 
 });
 
@@ -233,8 +252,16 @@ add_action( 'cmb2_admin_init', function () {
 } );
 
 add_action( 'wp_enqueue_scripts', function () {
-    wp_enqueue_style( 'shaneshop', get_stylesheet_uri(), [ 'wc-blocks-style' ], null );
+    wp_enqueue_style('typekit', 'https://use.typekit.net/lcj8zuc.css', [], null);
+    wp_style_add_data('typekit', 'media', 'print');
+    wp_style_add_data('typekit', 'onload', "this.media='all'");
+
+    wp_register_style('shaneshop', false, ['typekit'], SHANESHOP_VERSION);
+    wp_enqueue_style('shaneshop');
+    wp_add_inline_style('shaneshop', file_get_contents(get_stylesheet_directory() . '/style.css'));
+    wp_add_inline_style('shaneshop', file_get_contents(get_stylesheet_directory() . '/dist/style.css'));
 }, 20 );
+
 
 add_filter( 'woocommerce_breadcrumb_defaults', function ( $defaults ) {
     $defaults['home']      = false; 
@@ -245,6 +272,12 @@ add_filter( 'woocommerce_breadcrumb_defaults', function ( $defaults ) {
 add_filter( 'woocommerce_breadcrumb_home_url', function () {
     return wc_get_page_permalink( 'shop' );
 } );
+
+add_action('wp_head', function () {
+    global $wp_styles;
+    error_log(print_r($wp_styles->registered['typekit'] ?? 'missing', true));
+}, 999);
+
 
 add_action( 'phpmailer_init', function ( $phpmailer ) {
     if ( ! defined( 'SMTP_HOST' ) || ! defined( 'SMTP_USER' ) || ! defined( 'SMTP_PASS' ) ) {
