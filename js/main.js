@@ -12,8 +12,12 @@ if (!root) throw new Error("films-gallery markup missing");
 
 const api = createVideoApi({
 	...config,
-	startPage: Math.floor(config.firstBatch / config.batchSize) + 1,
+	startPage: config.firstBatch / config.batchSize + 1,
 });
+console.assert(
+	config.firstBatch % config.batchSize === 0,
+	"firstBatch must be a multiple of batchSize",
+);
 const player = initVideoPlayer();
 
 // Masonry container is #thumbs, not #films-gallery.
@@ -30,9 +34,7 @@ const arrows = initArrows(root, gallery);
 arrows?.attach();
 gallery.swiper.on("init resize", () => arrows?.refreshRects());
 
-gallery.swiper.on("slideChange", (sw) => {
-	gallery.syncURL(sw.realIndex);
-});
+gallery.swiper.on("slideChange", (sw) => gallery.syncURL(sw.realIndex + 1)); // 1 based
 
 const thumbs = initThumbnails({
 	root,
@@ -135,7 +137,6 @@ if (slideInfo && slideDesc) {
 /* ---------- Global play button ---------- */
 
 document.addEventListener("click", (e) => {
-	e.stopPropagation();
 	const btn = e.target.closest(".video-play");
 	if (!btn) return;
 	const video = btn.closest(".swiper-slide")?.querySelector("video");

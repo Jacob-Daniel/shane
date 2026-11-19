@@ -7,11 +7,9 @@ export function initThumbnails({ root, api, masonry, player, onSelect }) {
     if (!container) return null;
 
     const lazy = createLazyLoader({ rootMargin: config.lazyRootMargin });
-    let indexOffset = config.firstBatch;
-    let offset = config.firstBatch;
 
     function build(item, position) {
-        const index = indexOffset + position;
+        const index = item.index;
 
         const video = el("video", {
             class: "vid-block lazy-vid",
@@ -34,14 +32,13 @@ export function initThumbnails({ root, api, masonry, player, onSelect }) {
             {
                 class: "thumb-item",
                 dataset: { index: String(index) },
-                "aria-label": String(index - 1),
+                "aria-label": String(index),
             },
             [overlay],
         );
     }
 
     function append(items) {
-        if (!items.length) return [];
         const seen = new Set(
             [...container.querySelectorAll(".thumb-item")].map(
                 (li) => li.dataset.index,
@@ -50,9 +47,7 @@ export function initThumbnails({ root, api, masonry, player, onSelect }) {
         const fresh = items.filter((it) => !seen.has(String(it.index)));
         if (!fresh.length) return [];
 
-        const nodes = fresh.map((item, i) => build(item, i));
-        indexOffset += fresh.length;
-
+        const nodes = fresh.map(build);
         masonry?.append(nodes);
 
         nodes.forEach((node) => {
@@ -88,9 +83,6 @@ export function initThumbnails({ root, api, masonry, player, onSelect }) {
         append,
         loadMore,
         container,
-        get count() {
-            return offset;
-        },
         destroy() {
             lazy.disconnect();
         },

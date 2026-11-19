@@ -49,7 +49,11 @@ export function createVideoApi({
             page += 1;
             try {
                 const items = await get(current);
-                if (totalPages !== null && current >= totalPages) done = true;
+                if (
+                    !items.length ||
+                    (totalPages !== null && current >= totalPages)
+                )
+                    done = true;
                 return items;
             } catch (e) {
                 page = current;

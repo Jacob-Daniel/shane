@@ -14,8 +14,6 @@ export function initMasonry(root) {
     }
 
     function animateIn(elements) {
-        console.log("animateIn", elements.length, typeof gsap);
-
         gsap.from(elements, {
             opacity: 0,
             scale: 0.92,
@@ -65,11 +63,9 @@ export function initMasonry(root) {
     }
     function append(elements) {
         if (!elements || !elements.length) return;
+        container.append(...elements); // insert first, in both branches
         const m = ensure();
-        if (!m) {
-            container.append(...elements);
-            return;
-        }
+        if (!m) return;
         m.appended(elements);
         animateIn(elements);
     }
@@ -98,7 +94,6 @@ export function initMasonry(root) {
         });
     }
     window.addEventListener("resize", onResize, { passive: true });
-    console.log("build", container.clientWidth, container.children.length);
 
     return {
         ensure,

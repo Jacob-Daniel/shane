@@ -1,6 +1,7 @@
 const root = document.getElementById("films-gallery");
 
 export const config = {
+    scrollThreshold: 400,
     total: Number(root?.dataset.total) || 0,
     endpoint: root?.dataset.endpoint,
     nonce: root?.dataset.nonce,
