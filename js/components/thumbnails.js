@@ -21,6 +21,14 @@ export function initThumbnails({ root, api, masonry, player, onSelect }) {
         });
         if (item.poster) video.poster = item.poster;
 
+        if (item.thumb) {
+            video.poster = item.thumb;
+            const img = new Image();
+            img.onload = () => masonry?.layout();
+            console.log(item, "item thumb");
+            img.src = item.thumb;
+        }
+
         lazy.observe(video);
         player?.bindThumb(video);
 
@@ -49,17 +57,6 @@ export function initThumbnails({ root, api, masonry, player, onSelect }) {
 
         const nodes = fresh.map(build);
         masonry?.append(nodes);
-
-        nodes.forEach((node) => {
-            const v = node.querySelector("video");
-            if (v && !v.src) {
-                v.src = v.dataset.src;
-                v.load();
-                v.addEventListener("loadedmetadata", () => masonry?.layout(), {
-                    once: true,
-                });
-            }
-        });
 
         return nodes;
     }

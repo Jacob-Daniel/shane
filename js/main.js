@@ -54,7 +54,7 @@ const showAllBtn = root.querySelector("#load-more-thumbnails");
 const showSlideBtn = root.querySelector("#show-slider");
 const swiperOuter = root.querySelector("#swiper-outer");
 const swiperWrap = root.querySelector("#swiper-wrapper");
-const thumbsOuter = root.querySelector("#thumbs-outer");
+// const thumbsOuter = root.querySelector("#thumbs-outer");
 
 function toggleView(mode) {
 	const isSlideshow = mode === "slideshow";
@@ -75,7 +75,6 @@ function toggleView(mode) {
 
 			try {
 				const m = masonry?.ensure();
-				console.log("ensure returned", m);
 				m?.layout();
 			} catch (e) {
 				console.error("masonry failed", e);

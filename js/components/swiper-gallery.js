@@ -1,7 +1,12 @@
 import { Swiper } from "../vendor.js";
-import { config } from "../config.js";
+// import { config } from "../config.js";
 
-export function initSwiperGallery({ root, player, onSlideChange }) {
+export function initSwiperGallery({
+    root,
+    player,
+    loop = true,
+    onSlideChange,
+}) {
     const container = root.querySelector(".swiper");
     if (!container) return null;
 
@@ -10,9 +15,10 @@ export function initSwiperGallery({ root, player, onSlideChange }) {
 
     const currentEl = document.getElementById("current-slide");
     const totalEl = document.getElementById("total-slides");
-
+    const jumpTo = (sw, i, speed) =>
+        loop ? sw.slideToLoop(i, speed, false) : sw.slideTo(i, speed, false);
     const swiper = new Swiper(container, {
-        loop: true,
+        loop,
         lazy: true,
         preloadImages: false,
         slidesPerView: 1,
@@ -35,23 +41,22 @@ export function initSwiperGallery({ root, player, onSlideChange }) {
                 if (currentEl) currentEl.textContent = sw.realIndex + 1;
 
                 if (!Number.isNaN(requested) && requested > 0) {
-                    sw.slideTo(requested - 1, 0, false);
+                    jumpTo(sw, requested - 1, 0);
                 }
-
                 const active = sw.slides[sw.activeIndex];
                 if (active) {
-                    player.bindSlide(active);
-                    player.playNative(active);
+                    player?.bindSlide(active);
+                    player?.playNative(active);
                 }
             },
 
             slideChange(sw) {
                 if (currentEl) currentEl.textContent = sw.realIndex + 1;
-                player.pauseAll();
+                player?.pauseAll();
                 updateSlideInfo(sw);
                 const active = sw.slides[sw.activeIndex];
-                player.bindSlide(active);
-                player.playNative(active);
+                player?.bindSlide(active);
+                player?.playNative(active);
             },
 
             slideChangeTransitionEnd(sw) {
@@ -59,10 +64,10 @@ export function initSwiperGallery({ root, player, onSlideChange }) {
             },
 
             slideNextTransitionStart() {
-                player.pauseAll();
+                player?.pauseAll();
             },
             slidePrevTransitionStart() {
-                player.pauseAll();
+                player?.pauseAll();
             },
         },
     });
@@ -97,7 +102,7 @@ export function initSwiperGallery({ root, player, onSlideChange }) {
     return {
         swiper,
         slideTo(index) {
-            swiper.slideTo(index - 1, 500, false);
+            jumpTo(swiper, index - 1, 500);
         },
         syncURL(index) {
             if (ready) updateURL(index);

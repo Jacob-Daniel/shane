@@ -1,9 +1,4 @@
-export function createVideoApi({
-    endpoint,
-    nonce,
-    batchSize = 15,
-    startPage = 1,
-}) {
+export function createVideoApi({ endpoint, nonce, batchSize, startPage = 1 }) {
     let page = startPage;
     let totalPages = null;
     let loading = false;

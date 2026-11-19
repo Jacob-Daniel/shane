@@ -111,7 +111,7 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_script_module('films', SHANESHOP_URI . '/js/main.js', [], SHANESHOP_VERSION);
     }
     if ($portfolio) {
-        wp_enqueue_script('folio', SHANESHOP_URI . '/js/folio.js', ['swiper', 'gsap'], SHANESHOP_VERSION, true);
+        wp_enqueue_script_module('portfolio', SHANESHOP_URI . '/js/portfolio.js', [], SHANESHOP_VERSION);
     }
 
     //Woo

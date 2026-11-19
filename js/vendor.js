@@ -23,4 +23,4 @@ function requireGlobal(name) {
 
 export const Swiper = requireGlobal("Swiper");
 export const gsap = requireGlobal("gsap");
-export const Masonry = requireGlobal("Masonry");
+export const Masonry = window.Masonry ?? null;

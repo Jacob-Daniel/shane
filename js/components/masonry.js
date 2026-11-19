@@ -26,6 +26,7 @@ export function initMasonry(root) {
     }
 
     function build() {
+        if (!Masonry) throw new Error("[films] window.Masonry is missing.");
         if (!enabled()) return null;
         if (!container.clientWidth) return null;
 

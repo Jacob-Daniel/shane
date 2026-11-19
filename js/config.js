@@ -1,11 +1,13 @@
-const root = document.getElementById("films-gallery");
+const root =
+    document.getElementById("films-gallery") ??
+    document.getElementById("portfolio-gallery");
+const d = root?.dataset ?? {};
 
 export const config = {
-    scrollThreshold: 400,
-    total: Number(root?.dataset.total) || 0,
-    endpoint: root?.dataset.endpoint,
-    nonce: root?.dataset.nonce,
-    firstBatch: parseInt(root.dataset.firstBatch, 10) || 10,
-    batchSize: parseInt(root.dataset.batchSize, 10) || 5,
+    total: Number(d.total) || 0,
+    endpoint: d.endpoint,
+    nonce: d.nonce,
+    firstBatch: parseInt(d.firstBatch, 10) || 15,
+    batchSize: parseInt(d.batchSize, 10) || 5,
     breakpoints: { sm: 375, md: 768, lg: 1024, xl: 1440 },
 };
