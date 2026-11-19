@@ -101,8 +101,8 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style( 'shaneshop-tailwind', get_stylesheet_directory_uri() . '/dist/style.css', array(), filemtime( get_stylesheet_directory() . '/dist/style.css' ) );
 
     if ($films || $portfolio) {
-        wp_enqueue_style('swiper-style', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.css', [], '11.0.5');
-        wp_enqueue_script('swiper', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.js', [], '11.0.5', false);
+        wp_enqueue_style('swiper-style', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css', [], '11.0.5');
+        wp_enqueue_script('swiper', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js', [], '11.0.5', false);
         wp_enqueue_script('gsap', 'https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js', [], null, false);
 
     }

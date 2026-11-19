@@ -30,8 +30,7 @@ function render_gallery_entries(array $items, int $initial_count): void {
             echo '<span data-id="' . esc_attr($cover['id']) . '" class="' . esc_attr($cover['class']) . '">'
                . '<video class="vid-block lazy-vid" preload="none" playsinline muted loop'
                . ' data-src="' . esc_url($mp4) . '"'
-               . ' data-src="' . esc_url($mp4) . '"'
-               . ' poster="' . esc_url($cover['thumb']) . '"></video>'
+               . ' data-poster="' . esc_url($cover['thumb']) . '"></video>'
                . '<span class="video-play absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
                . ' grid place-items-center w-12 h-12">' . get_video_play_icon() . '</span>'
                . '</span>';

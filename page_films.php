@@ -10,10 +10,13 @@ get_header();
 $post_id = get_the_ID();
 $entries = shaneshop_get_entries($post_id);
 $items   = shaneshop_normalise_entries($entries);   // single source of truth
-$initial = 15;                                        // matches data-first-batch
+$initial = 10;                                        // matches data-first-batch
 $bg      = get_post_meta($post_id, 'gallery_page_background', true) ?: '#ffffff';
 
 $total = count($items);
+// FirstBatch must be a multiple of batchSize. 15 and 5 satisfy it, giving startPage = 4 (0 indexed). 
+// If change $initial, keep it a multiple of the batch size (5, 10, 15 and so on).
+
 ?>
 
 <main class="films-page flex flex-col items-center justify-center min-h-screen"
@@ -45,7 +48,7 @@ $total = count($items);
     </div>
 
     <div id="thumbs-outer">
-        <ul id="thumbs" class="thumbs video masonry w-full mt-[100px]">
+        <ul id="thumbs" class="thumbs video masonry w-full mt-[100px] md:mb-[200px]">
             <?php render_gallery_entries($items, $initial); ?>
         </ul>
     </div>

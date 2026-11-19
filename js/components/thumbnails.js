@@ -69,6 +69,19 @@ export function initThumbnails({ root, api, masonry, player, onSelect }) {
         return append(items);
     }
 
+    function revealPosters() {
+        container.querySelectorAll("video[data-poster]").forEach((v) => {
+            const url = v.dataset.poster;
+            delete v.dataset.poster;
+            const img = new Image();
+            img.onload = () => {
+                v.poster = url;
+                masonry?.layout();
+            };
+            img.src = url;
+        });
+    }
+
     // Delegated once — survives every append.
     container.addEventListener("click", (e) => {
         if (e.target.closest(".video-play")) return;
@@ -82,6 +95,7 @@ export function initThumbnails({ root, api, masonry, player, onSelect }) {
     return {
         append,
         loadMore,
+        revealPosters,
         container,
         destroy() {
             lazy.disconnect();

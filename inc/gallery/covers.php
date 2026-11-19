@@ -32,7 +32,7 @@ function getVimeoVideoThumbnailByVideoId($id = '', $thumbType = 'large') {
     }
 
     $response = wp_remote_get(
-        'https://vimeo.com/api/oembed.json?width=1280&url=' . rawurlencode("https://vimeo.com/{$id}"),
+        'https://vimeo.com/api/oembed.json?width=640&url=' . rawurlencode("https://vimeo.com/{$id}"),
         ['timeout' => 5]
     );
 

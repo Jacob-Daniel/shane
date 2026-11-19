@@ -1,6 +1,6 @@
 import { config } from "./config.js";
 import { createVideoApi } from "./api/videos.js";
-import { createLazyLoader } from "./utils/lazy.js";
+// import { createLazyLoader } from "./utils/lazy.js";
 import { initMasonry } from "./components/masonry.js";
 import { initArrows } from "./components/arrows.js";
 import { initVideoPlayer } from "./components/video-player.js";
@@ -71,6 +71,8 @@ function toggleView(mode) {
 
 	requestAnimationFrame(() => {
 		if (!isSlideshow) {
+			thumbs.revealPosters(); // help with loading
+
 			try {
 				const m = masonry?.ensure();
 				console.log("ensure returned", m);
