@@ -75,8 +75,8 @@ $remaining_array = array_map(function ($item) {
                     } else {
                         $poster = $item['thumbnail'] ? ' poster="' . esc_url($item['thumbnail']) . '"' : '';
                         echo '<div class="swiper-slide relative flex justify-center">'
-                           . '<div =class"video-play">'
-                           . '<video class="vid-block" preload="metadata" playsinline muted loop controls'
+                           . '<div class="video-play">'
+                           . '<video class="vid-block mx-auto" preload="metadata" playsinline muted loop controls'
                            . $poster . '>'
                            . '<source src="' . esc_url($item['mp4']) . '#t=0.001" type="video/mp4">'
                            . '</video></div></div>';
