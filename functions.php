@@ -96,7 +96,7 @@ add_action('wp_enqueue_scripts', function () {
 
     wp_enqueue_style( 'typekit', 'https://use.typekit.net/lcj8zuc.css', array(), null );
     wp_enqueue_style('shaneshop', SHANESHOP_URI . '/style.css', ['typekit'], SHANESHOP_VERSION);
-    wp_enqueue_script('fitvids', SHANESHOP_URI . '/js/fitvids.js', ['jquery'], SHANESHOP_VERSION, true);
+    // wp_enqueue_script('fitvids', SHANESHOP_URI . '/js/fitvids.js', ['jquery'], SHANESHOP_VERSION, true);
     wp_enqueue_script('shaneshop-nav', SHANESHOP_URI . '/js/nav.js', [], SHANESHOP_VERSION, true);
     wp_enqueue_style( 'shaneshop-tailwind', get_stylesheet_directory_uri() . '/dist/style.css', array(), filemtime( get_stylesheet_directory() . '/dist/style.css' ) );
 
@@ -124,6 +124,12 @@ add_action('wp_enqueue_scripts', function () {
 
 });
 
+add_action( 'wp_print_scripts', function () {
+    foreach ( wp_scripts()->queue as $h ) {
+        if ( in_array( 'jquery', wp_scripts()->registered[ $h ]->deps ?? [], true ) ) error_log( "jQuery dep: $h" );
+    }
+}, 999 );
+
 //Woo
 
 add_filter( 'template_include', function ( $template ) {
@@ -148,14 +154,18 @@ add_action('wp_enqueue_scripts', function () {
     }
     if ( is_product() ) {
         wp_dequeue_style( 'woocommerce-layout' );
-    }    
+    }
+    foreach ( ['wc-add-to-cart', 'wc-jquery-blockui', 'sourcebuster-js', 'wc-order-attribution'] as $h ) {
+        wp_dequeue_script( $h );
+    }  
 }, 99);
 
 add_action( 'init', function () {
     remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
     remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
     remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
-
+    remove_action('wp_head', 'print_emoji_detection_script', 7);
+    remove_action('wp_print_styles', 'print_emoji_styles');
 } );
 
 add_filter( 'woocommerce_product_thumbnails_columns', fn() => 4 ); // gallery thumbs, leave as is
