@@ -108,7 +108,7 @@ add_action('wp_enqueue_scripts', function () {
     }
     if ($films) {
         wp_enqueue_script('masonry-js', 'https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js', array(), '4.2.2', false);
-        wp_enqueue_script_module('films', SHANESHOP_URI . '/js/main.js', [], SHANESHOP_VERSION);
+        wp_enqueue_script_module('films', SHANESHOP_URI . '/js/films.js', [], SHANESHOP_VERSION);
     }
     if ($portfolio) {
         wp_enqueue_script_module('portfolio', SHANESHOP_URI . '/js/portfolio.js', [], SHANESHOP_VERSION);

@@ -25,7 +25,6 @@ export function initThumbnails({ root, api, masonry, player, onSelect }) {
             video.poster = item.thumb;
             const img = new Image();
             img.onload = () => masonry?.layout();
-            console.log(item, "item thumb");
             img.src = item.thumb;
         }
 
