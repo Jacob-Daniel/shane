@@ -270,12 +270,9 @@ add_action( 'phpmailer_init', function ( $phpmailer ) {
     }
 } );
 
-<<<<<<< Updated upstream
 add_filter( 'woocommerce_is_purchasable', function ( $purchasable, $product ) {
     return $product->is_type( 'grouped' ) ? true : $purchasable;
 }, 10, 2 );
-=======
->>>>>>> Stashed changes
 
 // Legacy removed block styles.
 add_action('wp_enqueue_scripts', function () {
