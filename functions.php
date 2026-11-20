@@ -93,12 +93,13 @@ add_filter('script_loader_tag', function ($tag, $handle) {
     }
     return $tag;
 }, 10, 2);
-add_filter('style_loader_tag', function ($tag, $handle) {
-    if ('typekit' === $handle) {
-        $tag = str_replace("media='all'", "media='print' onload=\"this.media='all'\"", $tag);
-    }
-    return $tag;
-}, 10, 2);
+
+// add_filter('style_loader_tag', function ($tag, $handle) {
+//     if ('typekit' === $handle) {
+//         $tag = str_replace("media='all'", "media='print' onload=\"this.media='all'\"", $tag);
+//     }
+//     return $tag;
+// }, 10, 2);
 
 
 add_action('wp_enqueue_scripts', function () {
@@ -273,11 +274,14 @@ add_filter( 'woocommerce_breadcrumb_home_url', function () {
     return wc_get_page_permalink( 'shop' );
 } );
 
-add_action('wp_head', function () {
-    global $wp_styles;
-    error_log(print_r($wp_styles->registered['typekit'] ?? 'missing', true));
-}, 999);
+// add_action('wp_head', function () {
+//     global $wp_styles;
+//     error_log(print_r($wp_styles->registered['typekit'] ?? 'missing', true));
+// }, 999);
 
+add_action('wp_head', function () {
+    echo '<link rel="preload" as="style" href="https://use.typekit.net/lcj8zuc.css" crossorigin>' . "\n";
+}, 1);
 
 add_action( 'phpmailer_init', function ( $phpmailer ) {
     if ( ! defined( 'SMTP_HOST' ) || ! defined( 'SMTP_USER' ) || ! defined( 'SMTP_PASS' ) ) {

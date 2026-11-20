@@ -24,10 +24,10 @@ $bg_size       = $gif_repeated ? 'contain' : 'cover';
     <div class="relative h-screen leading-none bg-cover bg-center"
          style="background-image: url(<?php echo esc_url($gif); ?>); background-size: <?php echo esc_attr($bg_size); ?>;"></div>
 <?php elseif ($video) : ?>
+    <?php $video_poster = get_post_meta(get_the_ID(), 'landing_page_video_poster', true); ?>
     <div class="relative h-screen leading-none">
         <video class="h-full w-full object-cover"
-            fetchpriority="high" 
-            loading="eager"
+            <?php echo $video_poster ? 'poster="' . esc_url($video_poster) . '"' : ''; ?>
             preload="auto"
             <?php echo $video_auto ? 'autoplay playsinline' : ''; ?>
             <?php echo $video_loop ? 'loop' : ''; ?>
@@ -36,6 +36,7 @@ $bg_size       = $gif_repeated ? 'contain' : 'cover';
             src="<?php echo esc_url($video); ?>">
         </video>
     </div>
+
 <?php endif; ?>
 
 <?php if ($overlay_color) : ?>
