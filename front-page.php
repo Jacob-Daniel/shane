@@ -26,12 +26,15 @@ $bg_size       = $gif_repeated ? 'contain' : 'cover';
 <?php elseif ($video) : ?>
     <div class="relative h-screen leading-none">
         <video class="h-full w-full object-cover"
-               preload="auto"
-               <?php echo $video_auto ? 'autoplay playsinline' : ''; ?>
-               <?php echo $video_loop ? 'loop' : ''; ?>
-               <?php echo $video_muted ? 'muted' : ''; ?>
-               <?php echo $video_controls ? 'controls' : ''; ?>
-               src="<?php echo esc_url($video); ?>"></video>
+            fetchpriority="high" 
+            loading="eager"
+            preload="auto"
+            <?php echo $video_auto ? 'autoplay playsinline' : ''; ?>
+            <?php echo $video_loop ? 'loop' : ''; ?>
+            <?php echo $video_muted ? 'muted' : ''; ?>
+            <?php echo $video_controls ? 'controls' : ''; ?>
+            src="<?php echo esc_url($video); ?>">
+        </video>
     </div>
 <?php endif; ?>
 
