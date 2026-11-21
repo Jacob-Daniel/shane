@@ -19,7 +19,7 @@ export function initThumbnails({ root, api, masonry, player, onSelect }) {
             playsInline: true,
             dataset: { src: item.url },
         });
-        if (item.poster) video.poster = item.poster;
+        // if (item.poster) video.poster = item.poster;
 
         if (item.thumb) {
             video.poster = item.thumb;
@@ -62,7 +62,20 @@ export function initThumbnails({ root, api, masonry, player, onSelect }) {
 
     async function loadMore() {
         const items = await api.next();
-        return append(items);
+        const nodes = append(items);
+        await Promise.all(
+            nodes.map((li) => {
+                const v = li.querySelector("video");
+                return new Promise((res) => {
+                    if (!v?.poster) return res();
+                    const img = new Image();
+                    img.onload = img.onerror = res;
+                    img.src = v.poster;
+                });
+            }),
+        );
+        masonry?.layout();
+        return nodes;
     }
 
     function revealPosters() {

@@ -1,23 +1,18 @@
 import { config } from "./config.js";
-import { createVideoApi } from "./api/videos.js";
+import { createGalleryApi } from "./api/gallery.js";
 // import { createLazyLoader } from "./utils/lazy.js";
 import { initMasonry } from "./components/masonry.js";
 import { initArrows } from "./components/arrows.js";
 import { initVideoPlayer } from "./components/video-player.js";
 import { initThumbnails } from "./components/thumbnails.js";
 import { initSwiperGallery } from "./components/swiper-gallery.js";
+import { createScrollIntent } from "./utils/scroll-intent.js";
 
 const root = document.getElementById("films-gallery");
 if (!root) throw new Error("films-gallery markup missing");
 
-const api = createVideoApi({
-	...config,
-	startPage: config.firstBatch / config.batchSize + 1,
-});
-console.assert(
-	config.firstBatch % config.batchSize === 0,
-	"firstBatch must be a multiple of batchSize",
-);
+const api = createGalleryApi({ ...config, startOffset: config.firstBatch });
+
 const player = initVideoPlayer();
 
 // Masonry container is #thumbs, not #films-gallery.
@@ -96,27 +91,15 @@ showSlideBtn?.addEventListener("click", () => {
 
 /* ---------- Infinite scroll ---------- */
 
-let queued = false;
-window.addEventListener(
-	"scroll",
-	() => {
-		if (queued || !thumbs.container.classList.contains("visible")) return;
-		queued = true;
-		requestAnimationFrame(async () => {
-			queued = false;
-			const remaining =
-				document.documentElement.scrollHeight -
-				(window.scrollY + window.innerHeight);
-			if (remaining > config.scrollThreshold) return;
-			try {
-				await thumbs.loadMore();
-			} catch (err) {
-				console.error(err);
-			}
-		});
-	},
-	{ passive: true },
-);
+const intent = createScrollIntent({
+	isActive: () => thumbs.container.classList.contains("visible"),
+	onNearBottom: () =>
+		thumbs
+			.loadMore()
+			.then(() => api.done && intent.stop())
+			.catch(console.error),
+	threshold: config.scrollThreshold,
+});
 
 window.addEventListener("resize", () => gallery?.update(), { passive: true });
 

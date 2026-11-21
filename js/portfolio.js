@@ -4,6 +4,7 @@ import { initPortfolioThumbs } from "./components/portfolio-thumbs.js";
 import { createGridPin } from "./components/grid-pin.js";
 import { createScrollIntent } from "./utils/scroll-intent.js";
 import { config } from "./config.js";
+import { createGalleryApi } from "./api/gallery.js";
 
 const root = document.getElementById("portfolio-gallery");
 if (!root) throw new Error("portfolio-gallery markup missing");
@@ -46,13 +47,14 @@ const pin = createGridPin({ main: root, outer: thumbsOuter });
 const TEXT_SHOW_ALL = "SHOW ALL";
 const TEXT_BACK = "BACK TO SLIDESHOW";
 
+const api = createGalleryApi({ ...config, startOffset: config.firstBatch });
+
 const thumbs = initPortfolioThumbs({
 	container: thumbsEl,
-	batchSize: config.batchSize,
+	api,
 	onBeforeAppend: () => pin.pin(),
 	onSelect: (index) => {
 		gallery.slideTo(index);
-		gallery.syncURL(index);
 		showSlideshow();
 	},
 });
@@ -97,7 +99,10 @@ btn.addEventListener("click", () =>
 
 const intent = createScrollIntent({
 	isActive: () => thumbsEl.classList.contains("visible"),
-	onNearBottom: () => {
-		if (!thumbs.loadMore()) intent.stop();
-	},
+	onNearBottom: () =>
+		thumbs
+			.loadMore()
+			.then(() => api.done && intent.stop())
+			.catch(console.error),
+	threshold: Math.min(config.scrollThreshold, window.innerHeight * 0.5),
 });

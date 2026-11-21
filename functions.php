@@ -144,12 +144,6 @@ add_action('wp_enqueue_scripts', function () {
 
 });
 
-add_action( 'wp_print_scripts', function () {
-    foreach ( wp_scripts()->queue as $h ) {
-        if ( in_array( 'jquery', wp_scripts()->registered[ $h ]->deps ?? [], true ) ) error_log( "jQuery dep: $h" );
-    }
-}, 999 );
-
 //Woo
 
 add_filter( 'template_include', function ( $template ) {

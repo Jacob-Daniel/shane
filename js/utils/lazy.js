@@ -2,10 +2,7 @@
  * Observe elements carrying data-src and swap it into src when near viewport.
  * Works for <video> and <img>. Unobserves after firing — never re-loads.
  */
-export function createLazyLoader({
-    rootMargin = "200px 0px",
-    threshold = 0.01,
-} = {}) {
+export function createLazyLoader({ rootMargin, threshold } = {}) {
     const observer = new IntersectionObserver(
         (entries) => {
             for (const entry of entries) {

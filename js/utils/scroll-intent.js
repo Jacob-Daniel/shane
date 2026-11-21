@@ -1,22 +1,21 @@
 const EVENTS = ["scroll", "wheel", "touchmove"];
 
 /** Calls onNearBottom on user scroll input while isActive() is true. */
-export function createScrollIntent({
-	isActive,
-	onNearBottom,
-	threshold = 400,
-}) {
+export function createScrollIntent({ isActive, onNearBottom, threshold }) {
 	let ticking = false;
 
 	function handler() {
 		if (ticking) return;
 		ticking = true;
-		requestAnimationFrame(() => {
-			ticking = false;
+		requestAnimationFrame(async () => {
 			const near =
 				window.innerHeight + window.scrollY >=
 				document.documentElement.scrollHeight - threshold;
-			if (isActive() && near) onNearBottom();
+			try {
+				if (isActive() && near) await onNearBottom();
+			} finally {
+				ticking = false;
+			}
 		});
 	}
 

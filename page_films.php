@@ -14,18 +14,19 @@ $initial = 10;                                        // matches data-first-batc
 $bg      = get_post_meta($post_id, 'gallery_page_background', true) ?: '#ffffff';
 
 $total = count($items);
+$scroll_threshold = 600;
+$batch_size = 5;
 // FirstBatch must be a multiple of batchSize. 15 and 5 satisfy it, giving startPage = 4 (0 indexed). 
-// If change $initial, keep it a multiple of the batch size (5, 10, 15 and so on).
-
 ?>
 
 <main class="films-page flex flex-col items-center justify-center min-h-screen"
       id="films-gallery"
       data-endpoint="<?php echo esc_url(rest_url('shaneshop/v1/films/' . $post_id)); ?>"
       data-nonce="<?php echo esc_attr(wp_create_nonce('wp_rest')); ?>"
-      data-batch-size="5"
+      data-batch-size="<?php echo esc_attr($batch_size); ?>"
       data-first-batch="<?php echo esc_attr($initial); ?>"
-      data-total="<?php echo esc_attr($total); ?>">
+      data-total="<?php echo esc_attr($total); ?>"
+      data-scroll-threshold="<?php echo esc_attr($scroll_threshold); ?>">
 
     <button data-text="BACK TO SLIDESHOW" id="load-more-thumbnails"
             class="fixed block border-0 top-3 right-4 z-[6000] cursor-pointer text-[0.7rem] font-extrabold">SHOW ALL</button>

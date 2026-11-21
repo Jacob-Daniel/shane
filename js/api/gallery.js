@@ -1,15 +1,20 @@
-export function createVideoApi({ endpoint, nonce, batchSize, startPage = 1 }) {
-    let page = startPage;
-    let totalPages = null;
+export function createGalleryApi({
+    endpoint,
+    nonce,
+    batchSize,
+    startOffset = 0,
+    total = 0,
+}) {
+    let offset = startOffset;
     let loading = false;
-    let done = false;
+    let done = total > 0 && startOffset >= total;
     const cache = new Map();
 
-    async function get(p = page) {
-        if (cache.has(p)) return cache.get(p);
+    async function get(o) {
+        if (cache.has(o)) return cache.get(o);
 
         const url = new URL(endpoint, window.location.origin);
-        url.searchParams.set("page", p);
+        url.searchParams.set("offset", o);
         url.searchParams.set("per_page", batchSize);
 
         const res = await fetch(url, {
@@ -18,18 +23,12 @@ export function createVideoApi({ endpoint, nonce, batchSize, startPage = 1 }) {
         });
         if (!res.ok) throw new Error(`Films API ${res.status}`);
 
-        const header = res.headers.get("X-WP-TotalPages");
-        if (header !== null) totalPages = parseInt(header, 10);
-
         const data = await res.json();
-        cache.set(p, data);
+        cache.set(o, data);
         return data;
     }
 
     return {
-        get page() {
-            return page;
-        },
         get done() {
             return done;
         },
@@ -40,18 +39,15 @@ export function createVideoApi({ endpoint, nonce, batchSize, startPage = 1 }) {
         async next() {
             if (loading || done) return [];
             loading = true;
-            const current = page;
-            page += 1;
+            const current = offset;
+            offset += batchSize;
             try {
                 const items = await get(current);
-                if (
-                    !items.length ||
-                    (totalPages !== null && current >= totalPages)
-                )
+                if (items.length < batchSize || (total && offset >= total))
                     done = true;
                 return items;
             } catch (e) {
-                page = current;
+                offset = current;
                 throw e;
             } finally {
                 loading = false;
@@ -59,9 +55,8 @@ export function createVideoApi({ endpoint, nonce, batchSize, startPage = 1 }) {
         },
 
         reset() {
-            page = startPage;
-            totalPages = null;
-            done = false;
+            offset = startOffset;
+            done = total > 0 && startOffset >= total;
             cache.clear();
         },
     };

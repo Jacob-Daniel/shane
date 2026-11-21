@@ -2,11 +2,11 @@ import { el, PLAY_ICON } from "../utils/dom.js";
 
 export function initPortfolioThumbs({
 	container,
-	batchSize,
+	api,
 	onSelect,
 	onBeforeAppend,
 }) {
-	let offset = 0;
+	let loaded = 0;
 
 	function build(media) {
 		const li = el("li", {
@@ -41,32 +41,41 @@ export function initPortfolioThumbs({
 	}
 
 	/** Returns true while more items remain. */
-	function loadMore() {
-		const list = window.remainingImages;
-		if (!Array.isArray(list)) return false;
-
-		const batch = list.slice(offset, offset + batchSize);
-		offset += batch.length;
+	async function loadMore() {
+		const items = await api.next();
 
 		const seen = new Set(
 			[...container.querySelectorAll(".thumb-item")].map(
 				(li) => li.dataset.index,
 			),
 		);
-		const nodes = batch
+		const nodes = items
 			.filter((m) => m.url && !seen.has(String(m.index)))
 			.map(build);
+		if (!nodes.length) return nodes;
 
-		if (nodes.length) {
-			onBeforeAppend?.();
-			container.append(...nodes);
-			requestAnimationFrame(() =>
-				nodes.forEach((n, i) =>
-					setTimeout(() => n.classList.add("fade-in-visible"), i * 80),
-				),
-			);
-		}
-		return offset < list.length;
+		onBeforeAppend?.();
+		container.append(...nodes);
+		loaded += nodes.length;
+
+		requestAnimationFrame(() =>
+			nodes.forEach((n, i) =>
+				setTimeout(() => n.classList.add("fade-in-visible"), i * 80),
+			),
+		);
+
+		// Resolve once images have a height, so the next scroll check sees the real page size.
+		await Promise.all(
+			nodes.map((li) => {
+				const img = li.querySelector("img");
+				return img && !img.complete
+					? new Promise((r) => {
+							img.onload = img.onerror = r;
+						})
+					: null;
+			}),
+		);
+		return nodes;
 	}
 
 	// Delegated once, survives every append.
@@ -80,7 +89,7 @@ export function initPortfolioThumbs({
 	return {
 		loadMore,
 		get loaded() {
-			return offset;
+			return loaded;
 		},
 	};
 }
