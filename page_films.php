@@ -15,7 +15,7 @@ $bg      = get_post_meta($post_id, 'gallery_page_background', true) ?: '#ffffff'
 
 $total = count($items);
 $scroll_threshold = 600;
-$batch_size = 5;
+$batch_size = 15;
 // FirstBatch must be a multiple of batchSize. 15 and 5 satisfy it, giving startPage = 4 (0 indexed). 
 ?>
 

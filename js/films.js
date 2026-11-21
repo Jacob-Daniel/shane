@@ -93,12 +93,19 @@ showSlideBtn?.addEventListener("click", () => {
 
 const intent = createScrollIntent({
 	isActive: () => thumbs.container.classList.contains("visible"),
-	onNearBottom: () =>
-		thumbs
-			.loadMore()
-			.then(() => api.done && intent.stop())
-			.catch(console.error),
-	threshold: config.scrollThreshold,
+	onNearBottom: async () => {
+		const h = () => document.documentElement.scrollHeight;
+		const before = h();
+		console.log("fetch", {
+			y: scrollY,
+			before,
+			left: before - (scrollY + innerHeight),
+		});
+		await thumbs.loadMore();
+		console.log("after", { after: h(), left: h() - (scrollY + innerHeight) });
+		if (api.done) intent.stop();
+	},
+	threshold: Math.min(config.scrollThreshold, window.innerHeight * 0.5),
 });
 
 window.addEventListener("resize", () => gallery?.update(), { passive: true });

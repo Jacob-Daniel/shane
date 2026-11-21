@@ -10,7 +10,7 @@ get_header();
 $post_id    = get_the_ID();
 $items      = shaneshop_normalise_portfolio(shaneshop_get_entries($post_id));
 $initial    = 10;
-$batch_size = 5;
+$batch_size = 15;
 $scroll_threshold = 1000;
 
 $remaining_array = array_map(function ($item) {

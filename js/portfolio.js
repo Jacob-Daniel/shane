@@ -104,5 +104,5 @@ const intent = createScrollIntent({
 			.loadMore()
 			.then(() => api.done && intent.stop())
 			.catch(console.error),
-	threshold: Math.min(config.scrollThreshold, window.innerHeight * 0.5),
+	threshold: Math.min(config.scrollThreshold, window.innerHeight),
 });
